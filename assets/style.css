@@ -346,3 +346,50 @@ a { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
   .intro { padding: 24px 0; }
   .mirror { min-height: 85vh; }
 }
+
+/* Mode select */
+.mode-select {
+  text-align: center;
+  padding: 48px 0;
+}
+.mode-select__label {
+  color: var(--ink-3);
+  font-size: 13px;
+  letter-spacing: 0.3em;
+  margin-bottom: 24px;
+}
+.mode-select__title {
+  font-family: var(--serif);
+  font-size: clamp(28px, 5vw, 40px);
+  margin-bottom: 48px;
+  font-weight: 400;
+}
+.mode-select__options {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.mode-card {
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--ink);
+  padding: 32px 24px;
+  width: min(260px, 100%);
+  cursor: pointer;
+  border-radius: 2px;
+  font-family: inherit;
+  transition: border-color 0.2s ease;
+}
+.mode-card:hover { border-color: var(--ink-2); }
+.mode-card__icon { font-size: 32px; margin-bottom: 12px; }
+.mode-card__name {
+  font-family: var(--serif);
+  font-size: 20px;
+  margin-bottom: 8px;
+}
+.mode-card__desc {
+  color: var(--ink-3);
+  font-size: 13px;
+  line-height: 1.6;
+}
