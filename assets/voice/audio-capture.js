@@ -1,11 +1,6 @@
 export async function startCapture({ onChunk, onVolume }) {
   const stream = await navigator.mediaDevices.getUserMedia({
-    audio: {
-      channelCount: 1,
-      echoCancellation: false,
-      noiseSuppression: false,
-      autoGainControl: true,
-    },
+    audio: { channelCount: 1, echoCancellation: true, noiseSuppression: true },
   });
   const ctx = new AudioContext({ sampleRate: 48000 });
   await ctx.audioWorklet.addModule(new URL('./downsampler.worklet.js', import.meta.url));

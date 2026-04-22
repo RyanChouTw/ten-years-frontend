@@ -9,6 +9,19 @@ const ECHO_TAIL_MS = 500;
 export function startVoiceMode(ctx) {
   const { apiBase, wsBase, showScreen, setLoader, toast } = ctx;
 
+  let wakeLock = null;
+  async function acquireWakeLock() {
+    if (!('wakeLock' in navigator) || document.visibilityState !== 'visible') return;
+    try {
+      wakeLock = await navigator.wakeLock.request('screen');
+      wakeLock.addEventListener('release', () => { wakeLock = null; });
+    } catch {}
+  }
+  acquireWakeLock();
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible' && !wakeLock) acquireWakeLock();
+  });
+
   const ageSel = document.getElementById('profileAge');
   if (ageSel.options.length <= 1) {
     for (let a = AGE_MIN; a <= AGE_MAX; a += 1) {
