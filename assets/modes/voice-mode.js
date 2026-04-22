@@ -2,6 +2,7 @@ import { startCapture } from '../voice/audio-capture.js';
 import { createPlayer } from '../voice/audio-playback.js';
 import { createOrb } from '../voice/orb.js';
 import { openWs } from '../voice/ws-client.js';
+import { withAccessQuery, withAccessHeader, reprompt } from '../access-gate.js';
 
 const AGE_MIN = 15, AGE_MAX = 80;
 const ECHO_TAIL_MS = 500;
@@ -80,7 +81,7 @@ export function startVoiceMode(ctx) {
       return;
     }
 
-    const url = `${wsBase}/ten-years/voice/reader?age=${state.age}&gender=${encodeURIComponent(state.gender)}`;
+    const url = withAccessQuery(`${wsBase}/ten-years/voice/reader?age=${state.age}&gender=${encodeURIComponent(state.gender)}`);
     const io = { orb, player, ws: null, capture };
     ws = openWs(url, {
       onOpen: () => {},
@@ -197,7 +198,7 @@ export function startVoiceMode(ctx) {
       return;
     }
 
-    const url = `${wsBase}/ten-years/voice/mirror?profile=${encodeURIComponent(JSON.stringify(state.profile))}`;
+    const url = withAccessQuery(`${wsBase}/ten-years/voice/mirror?profile=${encodeURIComponent(JSON.stringify(state.profile))}`);
     ws = openWs(url, {
       onMessage: (msg) => {
         if (msg.type === 'ready') orb.setState('listening');
@@ -233,11 +234,18 @@ export function startVoiceMode(ctx) {
   async function runLetterPhase() {
     showScreen('voice-letter');
     setLoader(true);
-    const res = await fetch(`${apiBase}/ten-years/letter`, {
+    const r = await fetch(`${apiBase}/ten-years/letter`, withAccessHeader({
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ profile: state.profile, history: [] }),
-    }).then((r) => r.json());
+    }));
+    if (r.status === 401) {
+      setLoader(false);
+      await reprompt('通行碼錯誤或已失效，請重新輸入');
+      toast('通行碼錯誤，請重新開始');
+      return;
+    }
+    const res = await r.json();
     setLoader(false);
 
     state.letter = res.letter;

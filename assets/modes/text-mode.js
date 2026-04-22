@@ -1,3 +1,5 @@
+import { withAccessHeader, reprompt } from '../access-gate.js';
+
 const MIRROR_MAX_TURNS = 15;
 
 export function startTextMode({ apiBase, showScreen, setLoader, toast }) {
@@ -13,11 +15,15 @@ export function startTextMode({ apiBase, showScreen, setLoader, toast }) {
   const $ = (sel) => document.querySelector(sel);
 
   async function api(path, body) {
-    const res = await fetch(apiBase + path, {
+    const res = await fetch(apiBase + path, withAccessHeader({
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
-    });
+    }));
+    if (res.status === 401) {
+      await reprompt('通行碼錯誤或已失效，請重新輸入');
+      throw new Error('通行碼錯誤');
+    }
     if (!res.ok) {
       const err = await res.json().catch(() => ({ error: 'Network error' }));
       throw new Error(err.error || `HTTP ${res.status}`);

@@ -30,6 +30,13 @@ function toast(msg) {
 
 const ctx = { apiBase: API_BASE, wsBase: WS_BASE, showScreen, setLoader, toast };
 
+async function gated(fn) {
+  const { ensureAccessCode } = await import('./access-gate.js');
+  const code = await ensureAccessCode();
+  if (!code) return;
+  fn();
+}
+
 $('#modeTextBtn')?.addEventListener('click', async () => {
   const { startTextMode } = await import('./modes/text-mode.js');
   startTextMode(ctx);
@@ -41,5 +48,12 @@ $('#modeVoiceBtn')?.addEventListener('click', async () => {
 });
 
 $('#startBtn').addEventListener('click', () => {
-  showScreen('mode-select');
+  gated(() => showScreen('mode-select'));
 });
+
+// Eagerly consume ?k= from the URL so a shared link primes localStorage
+// even if the user lingers on the landing screen.
+(async () => {
+  const { getAccessCode } = await import('./access-gate.js');
+  getAccessCode();
+})();

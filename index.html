@@ -211,6 +211,19 @@
     <div class="loader__dot"></div>
   </div>
 
+  <!-- Access gate overlay -->
+  <div id="accessGate" hidden style="position:fixed;inset:0;background:rgba(0,0,0,.72);display:flex;align-items:center;justify-content:center;z-index:9999;padding:16px;">
+    <div style="background:#fff;padding:28px 24px;border-radius:12px;max-width:360px;width:100%;text-align:center;color:#222;box-shadow:0 12px 40px rgba(0,0,0,.35);">
+      <h2 style="margin:0 0 8px;font-size:20px;">這是私人體驗</h2>
+      <p style="margin:0 0 18px;color:#666;font-size:14px;line-height:1.5;">請輸入朋友給你的通行碼</p>
+      <input id="accessGateInput" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"
+        style="width:100%;padding:11px 12px;border:1px solid #ccc;border-radius:6px;font-size:16px;box-sizing:border-box;outline:none;">
+      <div id="accessGateErr" style="color:#c23;font-size:13px;min-height:18px;margin:8px 0;"></div>
+      <button id="accessGateBtn"
+        style="width:100%;padding:11px;background:#222;color:#fff;border:0;border-radius:6px;font-size:15px;cursor:pointer;font-weight:600;">繼續</button>
+    </div>
+  </div>
+
 </main>
 
 <script src="./assets/app.js" type="module"></script>
