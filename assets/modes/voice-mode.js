@@ -5,6 +5,9 @@ import { openWs } from '../voice/ws-client.js';
 
 const AGE_MIN = 15, AGE_MAX = 80;
 const ECHO_TAIL_MS = 500;
+// Gemini 3.1 Live sends GoAway around 10 minutes into an audio-only session.
+// Soft-prompt the user a few minutes before that so they can finalize cleanly.
+const READER_SOFT_LIMIT_MS = 7 * 60 * 1000;
 
 export function startVoiceMode(ctx) {
   const { apiBase, wsBase, showScreen, setLoader, toast } = ctx;
@@ -87,13 +90,31 @@ export function startVoiceMode(ctx) {
     });
     io.ws = ws;
 
-    document.getElementById('voiceQuizDoneBtn').onclick = () => {
+    const doneBtn = document.getElementById('voiceQuizDoneBtn');
+    const highlightDoneBtn = () => {
+      if (!doneBtn) return;
+      doneBtn.style.animation = 'pulse 1.6s ease-in-out infinite';
+      doneBtn.style.boxShadow = '0 0 18px rgba(255,255,255,0.45)';
+    };
+
+    state.readerSoftTimer = setTimeout(() => {
+      toast('對話差不多了，可以按「我答完了」繼續');
+      highlightDoneBtn();
+    }, READER_SOFT_LIMIT_MS);
+
+    state.readerClosedEarly = false;
+    doneBtn.onclick = () => {
+      clearTimeout(state.readerSoftTimer);
+      if (state.readerClosedEarly) {
+        toast('對話已中斷，正在以目前內容整理，請稍候');
+      }
       ws.send({ type: 'finalize_profile' });
       orb.setState('thinking');
       setLoader(true);
     };
 
     state.readerIo = io;
+    state.readerHighlightDone = highlightDoneBtn;
   }
 
   function handleReaderMsg(msg, io) {
@@ -117,10 +138,20 @@ export function startVoiceMode(ctx) {
       }
     } else if (msg.type === 'profile') {
       setLoader(false);
+      clearTimeout(state.readerSoftTimer);
       state.profile = msg.profile;
       capture.stop();
       transitionToMonologueScreen(io);
+    } else if (msg.type === 'live_closed') {
+      // Gemini hit its session duration limit. Mic input is useless now.
+      state.readerClosedEarly = true;
+      capture?.setMuted(true);
+      orb.setState('thinking');
+      clearTimeout(state.readerSoftTimer);
+      toast('對話時間已到，請按「我答完了」結束這段');
+      state.readerHighlightDone?.();
     } else if (msg.type === 'error') {
+      setLoader(false);
       toast(msg.message);
     }
   }
