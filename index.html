@@ -78,6 +78,56 @@
     </div>
   </section>
 
+  <!-- Voice Quiz -->
+  <section class="screen screen--voice-quiz" data-screen="voice-quiz" hidden>
+    <div class="voice-stage">
+      <div class="voice-stage__label">我在聽你</div>
+      <div class="orb" id="voiceOrb"></div>
+      <div class="voice-stage__meter" id="voiceQuizMeter">Q 0/10</div>
+      <div class="voice-stage__actions">
+        <button class="btn voice-stage__end" id="voiceQuizDoneBtn">我答完了</button>
+        <button class="btn voice-stage__fallback" id="voiceFallbackBtn1">改用文字版</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Voice Monologue (reader speaks the monologue) -->
+  <section class="screen screen--voice-monologue" data-screen="voice-monologue" hidden>
+    <div class="voice-stage">
+      <div class="voice-stage__label">我看到你了</div>
+      <div class="orb" id="voiceOrbMono"></div>
+      <button class="btn btn--primary" id="voiceSummonBtn" hidden>召喚十年後的你</button>
+    </div>
+  </section>
+
+  <!-- Voice Mirror -->
+  <section class="screen screen--voice-mirror" data-screen="voice-mirror" hidden>
+    <div class="voice-stage">
+      <div class="voice-stage__label">十年後的你</div>
+      <div class="orb" id="voiceOrbMirror"></div>
+      <div class="voice-stage__meter" id="voiceMirrorTurn">0 / 10</div>
+      <div class="voice-stage__actions">
+        <button class="btn voice-stage__fallback" id="voiceFallbackBtn2">改用文字版</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Voice Letter -->
+  <section class="screen screen--voice-letter" data-screen="voice-letter" hidden>
+    <div class="letter">
+      <div class="letter__label">來自十年後的信</div>
+      <article class="letter__body" id="voiceLetterBody"></article>
+      <footer class="letter__footer">
+        <div class="letter__slogan">讓強大的科技，走進每個人的日常</div>
+        <div class="letter__brand">Hypertec Studio · <a href="https://hypertec.tw">hypertec.tw</a></div>
+      </footer>
+      <div class="letter__actions">
+        <button class="btn" id="voiceLetterCopyBtn" hidden>複製全文</button>
+        <button class="btn" id="voiceLetterRestartBtn" hidden>再玩一次</button>
+      </div>
+    </div>
+  </section>
+
   <!-- Screen 1: Quiz -->
   <section class="screen screen--quiz" data-screen="quiz" hidden>
     <div class="quiz">
