@@ -4,6 +4,7 @@ import { createOrb } from '../voice/orb.js';
 import { openWs } from '../voice/ws-client.js';
 
 const AGE_MIN = 15, AGE_MAX = 80;
+const ECHO_TAIL_MS = 500;
 
 export function startVoiceMode(ctx) {
   const { apiBase, wsBase, showScreen, setLoader, toast } = ctx;
@@ -88,9 +89,14 @@ export function startVoiceMode(ctx) {
       orb.setState('listening');
     } else if (msg.type === 'audio') {
       if (orb.state !== 'speaking') orb.setState('speaking');
+      capture.setMuted(true);
       player.enqueue(msg.data);
     } else if (msg.type === 'turn_end') {
-      orb.setState('listening');
+      const unmuteAt = player.msUntilIdle() + ECHO_TAIL_MS;
+      setTimeout(() => {
+        orb.setState('listening');
+        capture.setMuted(false);
+      }, unmuteAt);
       if (state.profile && !state.summonReady) {
         state.summonReady = true;
         const btn = document.getElementById('voiceSummonBtn');
@@ -134,8 +140,9 @@ export function startVoiceMode(ctx) {
         onChunk: (b64) => ws?.send({ type: 'audio', data: b64 }),
         onVolume: (v) => {
           if (orb.state === 'listening') orb.setIntensity(v);
-          if (orb.state === 'speaking' && v > 0.15) {
+          if (orb.state === 'speaking' && v > 0.15 && capture?.isMuted()) {
             player.flush();
+            capture.setMuted(false);
             ws?.send({ type: 'interrupt' });
             orb.setState('listening');
           }
@@ -152,10 +159,15 @@ export function startVoiceMode(ctx) {
         if (msg.type === 'ready') orb.setState('listening');
         else if (msg.type === 'audio') {
           if (orb.state !== 'speaking') orb.setState('speaking');
+          capture.setMuted(true);
           player.enqueue(msg.data);
         }
         else if (msg.type === 'turn_end') {
-          orb.setState('listening');
+          const unmuteAt = player.msUntilIdle() + ECHO_TAIL_MS;
+          setTimeout(() => {
+            orb.setState('listening');
+            capture.setMuted(false);
+          }, unmuteAt);
           ws.send({ type: 'user_turn_end' });
         }
         else if (msg.type === 'user_turn_counted') {

@@ -7,7 +7,9 @@ export async function startCapture({ onChunk, onVolume }) {
 
   const source = ctx.createMediaStreamSource(stream);
   const worklet = new AudioWorkletNode(ctx, 'downsampler');
+  let muted = false;
   worklet.port.onmessage = (e) => {
+    if (muted) return;
     const int16 = new Int16Array(e.data);
     const bytes = new Uint8Array(int16.buffer);
     let binary = '';
@@ -32,6 +34,8 @@ export async function startCapture({ onChunk, onVolume }) {
   })();
 
   return {
+    setMuted(v) { muted = !!v; },
+    isMuted() { return muted; },
     stop() {
       running = false;
       stream.getTracks().forEach((t) => t.stop());

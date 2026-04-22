@@ -55,5 +55,8 @@ export function createPlayer({ onVolume }) {
       ctx.close();
     },
     isPlaying() { return queued.length > 0; },
+    msUntilIdle() {
+      return Math.max(0, (nextStart - ctx.currentTime) * 1000);
+    },
   };
 }
