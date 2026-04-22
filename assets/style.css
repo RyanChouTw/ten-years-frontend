@@ -393,3 +393,45 @@ a { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
   font-size: 13px;
   line-height: 1.6;
 }
+
+/* Profile collect */
+.profile-collect { text-align: center; padding: 48px 0; }
+.profile-collect__label {
+  color: var(--ink-3);
+  font-size: 13px;
+  letter-spacing: 0.3em;
+  margin-bottom: 24px;
+}
+.profile-collect__title {
+  font-family: var(--serif);
+  font-size: clamp(28px, 5vw, 40px);
+  margin-bottom: 40px;
+  font-weight: 400;
+}
+.profile-collect__form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 360px;
+  margin: 0 auto;
+}
+.profile-collect__field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: left;
+}
+.profile-collect__field span {
+  color: var(--ink-2);
+  font-size: 14px;
+}
+.profile-collect__field select {
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--ink);
+  padding: 12px 14px;
+  font-family: inherit;
+  font-size: 16px;
+  outline: none;
+}
+.profile-collect__field select:focus { border-color: var(--ink-2); }

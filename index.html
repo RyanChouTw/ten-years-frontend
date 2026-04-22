@@ -51,6 +51,33 @@
     </div>
   </section>
 
+  <!-- Profile collect (voice mode only) -->
+  <section class="screen screen--profile" data-screen="profile" hidden>
+    <div class="profile-collect">
+      <div class="profile-collect__label">在我讀你之前</div>
+      <h2 class="profile-collect__title">告訴我兩件事</h2>
+      <form class="profile-collect__form" id="profileForm">
+        <label class="profile-collect__field">
+          <span>你現在幾歲？</span>
+          <select id="profileAge" required>
+            <option value="">——</option>
+            <!-- JS fills 15-80 -->
+          </select>
+        </label>
+        <label class="profile-collect__field">
+          <span>你想用什麼聲音呼應十年後的你？</span>
+          <select id="profileGender" required>
+            <option value="">——</option>
+            <option value="female">女聲</option>
+            <option value="male">男聲</option>
+            <option value="neutral">中性</option>
+          </select>
+        </label>
+        <button type="submit" class="btn btn--primary">繼續</button>
+      </form>
+    </div>
+  </section>
+
   <!-- Screen 1: Quiz -->
   <section class="screen screen--quiz" data-screen="quiz" hidden>
     <div class="quiz">
