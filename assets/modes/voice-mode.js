@@ -81,7 +81,7 @@ export function startVoiceMode(ctx) {
       return;
     }
 
-    const url = withAccessQuery(`${wsBase}/ten-years/voice/reader?age=${state.age}&gender=${encodeURIComponent(state.gender)}`);
+    const url = withAccessQuery(`${wsBase}/voice/reader?age=${state.age}&gender=${encodeURIComponent(state.gender)}`);
     const io = { orb, player, ws: null, capture };
     ws = openWs(url, {
       onOpen: () => {},
@@ -198,7 +198,7 @@ export function startVoiceMode(ctx) {
       return;
     }
 
-    const url = withAccessQuery(`${wsBase}/ten-years/voice/mirror?profile=${encodeURIComponent(JSON.stringify(state.profile))}`);
+    const url = withAccessQuery(`${wsBase}/voice/mirror?profile=${encodeURIComponent(JSON.stringify(state.profile))}`);
     ws = openWs(url, {
       onMessage: (msg) => {
         if (msg.type === 'ready') orb.setState('listening');
@@ -234,7 +234,7 @@ export function startVoiceMode(ctx) {
   async function runLetterPhase() {
     showScreen('voice-letter');
     setLoader(true);
-    const r = await fetch(`${apiBase}/ten-years/letter`, withAccessHeader({
+    const r = await fetch(`${apiBase}/letter`, withAccessHeader({
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ profile: state.profile, history: [] }),

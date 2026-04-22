@@ -75,7 +75,7 @@ export function startTextMode({ apiBase, showScreen, setLoader, toast }) {
   async function goToLetter() {
     setLoader(true);
     try {
-      const data = await api('/ten-years/letter', {
+      const data = await api('/letter', {
         profile: state.profile,
         history: state.mirrorHistory,
       });
@@ -94,7 +94,7 @@ export function startTextMode({ apiBase, showScreen, setLoader, toast }) {
   (async () => {
     setLoader(true);
     try {
-      const data = await api('/ten-years/quiz/next', { history: [] });
+      const data = await api('/quiz/next', { history: [] });
       state.quizHistory = [{ role: 'assistant', content: data.question }];
       renderQuiz(data.question, 0);
       showScreen('quiz');
@@ -112,7 +112,7 @@ export function startTextMode({ apiBase, showScreen, setLoader, toast }) {
     setLoader(true);
     try {
       state.quizHistory.push({ role: 'user', content: answer });
-      const data = await api('/ten-years/quiz/next', {
+      const data = await api('/quiz/next', {
         history: state.quizHistory.slice(0, -1),
         answer,
       });
@@ -137,7 +137,7 @@ export function startTextMode({ apiBase, showScreen, setLoader, toast }) {
   $('#summonBtn').addEventListener('click', async () => {
     setLoader(true);
     try {
-      const data = await api('/ten-years/mirror/open', { profile: state.profile });
+      const data = await api('/mirror/open', { profile: state.profile });
       state.mirrorHistory = [{ role: 'assistant', content: data.message }];
       state.mirrorTurn = 0;
       renderMirror();
@@ -161,7 +161,7 @@ export function startTextMode({ apiBase, showScreen, setLoader, toast }) {
     state.mirrorHistory.push({ role: 'user', content: userMessage });
     renderMirror();
     try {
-      const data = await api('/ten-years/mirror/reply', {
+      const data = await api('/mirror/reply', {
         profile: state.profile,
         history: state.mirrorHistory.slice(0, -1),
         userMessage,

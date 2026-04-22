@@ -3,7 +3,7 @@ const API_BASE = (() => {
   if (h === 'localhost' || h === '127.0.0.1' || h.startsWith('192.168.')) {
     return 'http://localhost:3001';
   }
-  return 'https://api.hypertec.tw';
+  return 'https://ten-years-api.hypertec.tw';
 })();
 
 const WS_BASE = API_BASE.replace(/^http/, 'ws');
