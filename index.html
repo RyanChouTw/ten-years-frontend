@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>十年後 — 一場與自己的對話 | Hypertec</title>
+<meta name="description" content="讓 AI 讀你，然後見十年後的自己。一場大約 15 分鐘的對話，結束時會收到一封來自未來的信。">
+<link rel="canonical" href="https://hypertec.tw/ten-years/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="十年後 — 一場與自己的對話">
+<meta property="og:description" content="讓 AI 讀你，然後見十年後的自己。">
+<meta property="og:url" content="https://hypertec.tw/ten-years/">
+<meta property="og:site_name" content="Hypertec">
+<meta property="og:image" content="https://hypertec.tw/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="./assets/style.css">
+</head>
+<body>
+
+<main id="app">
+
+  <!-- Screen 0: Intro -->
+  <section class="screen screen--intro" data-screen="intro">
+    <div class="intro">
+      <div class="intro__label">一場與自己的對話</div>
+      <h1 class="intro__title">十年後</h1>
+      <p class="intro__subtitle">先讓我讀你，然後讓你見你自己。</p>
+      <button class="btn btn--primary" id="startBtn">開始</button>
+      <div class="intro__note">大約 15 分鐘 · 無需註冊 · 繁體中文</div>
+    </div>
+  </section>
+
+  <!-- Screen 1: Quiz -->
+  <section class="screen screen--quiz" data-screen="quiz" hidden>
+    <div class="quiz">
+      <div class="quiz__meter">
+        <div class="quiz__meter-label">我對你的理解</div>
+        <div class="quiz__meter-bar"><div class="quiz__meter-fill" id="quizFill"></div></div>
+        <div class="quiz__meter-value" id="quizValue">0%</div>
+      </div>
+      <div class="quiz__question" id="quizQuestion">…</div>
+      <form class="quiz__form" id="quizForm">
+        <textarea
+          class="quiz__input"
+          id="quizAnswer"
+          rows="4"
+          maxlength="2000"
+          placeholder="誠實就好，不用想太久"
+          autocomplete="off"
+          required
+        ></textarea>
+        <button type="submit" class="btn btn--primary" id="quizSubmit">送出</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Screen 2: Monologue -->
+  <section class="screen screen--monologue" data-screen="monologue" hidden>
+    <div class="monologue">
+      <div class="monologue__label">我看到你了</div>
+      <p class="monologue__body" id="monologueBody"></p>
+      <button class="btn btn--primary" id="summonBtn">召喚十年後的你</button>
+    </div>
+  </section>
+
+  <!-- Screen 3: Mirror chat -->
+  <section class="screen screen--mirror" data-screen="mirror" hidden>
+    <div class="mirror">
+      <div class="mirror__header">
+        <div class="mirror__title">十年後的你</div>
+        <div class="mirror__turn" id="mirrorTurn">1 / 15</div>
+      </div>
+      <div class="mirror__log" id="mirrorLog"></div>
+      <form class="mirror__form" id="mirrorForm">
+        <input
+          class="mirror__input"
+          id="mirrorInput"
+          type="text"
+          maxlength="2000"
+          placeholder="你想問什麼？"
+          autocomplete="off"
+          required
+        >
+        <button type="submit" class="btn btn--primary" id="mirrorSubmit">送</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Screen 4: Letter -->
+  <section class="screen screen--letter" data-screen="letter" hidden>
+    <div class="letter">
+      <div class="letter__label">來自十年後的信</div>
+      <article class="letter__body" id="letterBody"></article>
+      <footer class="letter__footer">
+        <div class="letter__slogan">讓強大的科技，走進每個人的日常</div>
+        <div class="letter__brand">Hypertec Studio · <a href="https://hypertec.tw">hypertec.tw</a></div>
+      </footer>
+      <div class="letter__actions">
+        <button class="btn" id="letterCopyBtn">複製全文</button>
+        <button class="btn" id="letterRestartBtn">再玩一次</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Loading overlay -->
+  <div class="loader" id="loader" hidden>
+    <div class="loader__dot"></div>
+    <div class="loader__dot"></div>
+    <div class="loader__dot"></div>
+  </div>
+
+</main>
+
+<script src="./assets/app.js" type="module"></script>
+</body>
+</html>
