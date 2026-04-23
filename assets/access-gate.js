@@ -38,6 +38,39 @@ export function newSessionId() {
   return Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 8);
 }
 
+const CONSENT_KEY = 'ten_years_privacy_agreed';
+const CONSENT_VERSION = '2026-04-23'; // bump this when the policy changes to force reconsent
+
+export function hasConsent() {
+  return localStorage.getItem(CONSENT_KEY) === CONSENT_VERSION;
+}
+
+export function requestConsent() {
+  return new Promise((resolve) => {
+    const el = document.getElementById('privacyConsent');
+    const accept = document.getElementById('privacyAcceptBtn');
+    const cancel = document.getElementById('privacyCancelBtn');
+    if (!el || !accept || !cancel) { resolve(true); return; }
+    el.hidden = false;
+    const cleanup = () => {
+      el.hidden = true;
+      accept.onclick = null;
+      cancel.onclick = null;
+    };
+    accept.onclick = () => {
+      localStorage.setItem(CONSENT_KEY, CONSENT_VERSION);
+      cleanup();
+      resolve(true);
+    };
+    cancel.onclick = () => { cleanup(); resolve(false); };
+  });
+}
+
+export async function ensureConsent() {
+  if (hasConsent()) return true;
+  return requestConsent();
+}
+
 function showGate() {
   return new Promise((resolve) => {
     const gateEl = document.getElementById('accessGate');

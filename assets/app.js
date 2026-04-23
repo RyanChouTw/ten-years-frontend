@@ -31,7 +31,9 @@ function toast(msg) {
 const ctx = { apiBase: API_BASE, wsBase: WS_BASE, showScreen, setLoader, toast };
 
 async function gated(fn) {
-  const { ensureAccessCode } = await import('./access-gate.js');
+  const { ensureConsent, ensureAccessCode } = await import('./access-gate.js');
+  const agreed = await ensureConsent();
+  if (!agreed) return; // user declined privacy → stay on intro
   const code = await ensureAccessCode();
   if (!code) return;
   fn();

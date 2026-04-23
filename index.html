@@ -32,6 +32,10 @@
       <p class="intro__subtitle">先讓我讀你，然後讓你見你自己。</p>
       <button class="btn btn--primary" id="startBtn">開始</button>
       <div class="intro__note">大約 15 分鐘 · 無需註冊 · 繁體中文</div>
+      <div class="intro__footer" style="margin-top:32px;font-size:12px;color:#888;">
+        <a href="/zh/products/ten-years/privacy/" style="color:inherit;text-decoration:underline;">隱私權</a>
+        &nbsp;|&nbsp;Powered by Hypertec, All rights reserved.
+      </div>
     </div>
   </section>
 
@@ -209,6 +213,24 @@
     <div class="loader__dot"></div>
     <div class="loader__dot"></div>
     <div class="loader__dot"></div>
+  </div>
+
+  <!-- Privacy consent overlay -->
+  <div id="privacyConsent" hidden style="position:fixed;inset:0;background:rgba(0,0,0,.72);display:flex;align-items:center;justify-content:center;z-index:9998;padding:16px;">
+    <div style="background:#fff;padding:28px 24px;border-radius:12px;max-width:460px;width:100%;color:#222;box-shadow:0 12px 40px rgba(0,0,0,.35);max-height:88vh;overflow-y:auto;">
+      <h2 style="margin:0 0 12px;font-size:20px;text-align:center;">開始之前</h2>
+      <p style="margin:0 0 16px;color:#444;font-size:14px;line-height:1.7;">
+        本服務為回顧與改善品質，會把**這次對話的完整逐字內容**（含 AI 的提問、你的回答、最終 profile、信件）保存在伺服器上 <strong>90 天</strong>後自動刪除。我們不蒐集姓名、Email、真實 IP，也不會拿你的內容去訓練 AI。
+      </p>
+      <p style="margin:0 0 18px;color:#666;font-size:13px;line-height:1.6;">
+        完整內容請參閱
+        <a href="/zh/products/ten-years/privacy/" target="_blank" rel="noopener" style="color:#000;font-weight:600;">隱私權政策</a>。
+      </p>
+      <div style="display:flex;gap:10px;">
+        <button id="privacyCancelBtn" style="flex:1;padding:11px;background:#eee;color:#333;border:0;border-radius:6px;font-size:14px;cursor:pointer;">不同意</button>
+        <button id="privacyAcceptBtn" style="flex:2;padding:11px;background:#222;color:#fff;border:0;border-radius:6px;font-size:14px;cursor:pointer;font-weight:600;">同意並繼續</button>
+      </div>
+    </div>
   </div>
 
   <!-- Access gate overlay -->
