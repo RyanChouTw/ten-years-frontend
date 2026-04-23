@@ -26,13 +26,16 @@ export function withAccessQuery(urlStr) {
   return `${urlStr}${sep}k=${encodeURIComponent(code)}`;
 }
 
-export function withAccessHeader(init = {}) {
+export function withAccessHeader(init = {}, sessionId) {
   const code = getAccessCode();
-  if (!code) return init;
-  return {
-    ...init,
-    headers: { ...(init.headers || {}), 'X-Access-Code': code },
-  };
+  const headers = { ...(init.headers || {}) };
+  if (code) headers['X-Access-Code'] = code;
+  if (sessionId) headers['X-Session-Id'] = sessionId;
+  return { ...init, headers };
+}
+
+export function newSessionId() {
+  return Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 8);
 }
 
 function showGate() {

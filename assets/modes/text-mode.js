@@ -1,8 +1,9 @@
-import { withAccessHeader, reprompt } from '../access-gate.js';
+import { withAccessHeader, reprompt, newSessionId } from '../access-gate.js';
 
 const MIRROR_MAX_TURNS = 15;
 
 export function startTextMode({ apiBase, showScreen, setLoader, toast }) {
+  const sessionId = newSessionId();
   const state = {
     quizHistory: [],
     profile: null,
@@ -19,7 +20,7 @@ export function startTextMode({ apiBase, showScreen, setLoader, toast }) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
-    }));
+    }, sessionId));
     if (res.status === 401) {
       await reprompt('通行碼錯誤或已失效，請重新輸入');
       throw new Error('通行碼錯誤');
