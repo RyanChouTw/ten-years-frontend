@@ -31,11 +31,9 @@ function toast(msg) {
 const ctx = { apiBase: API_BASE, wsBase: WS_BASE, showScreen, setLoader, toast };
 
 async function gated(fn) {
-  const { ensureConsent, ensureAccessCode } = await import('./access-gate.js');
-  const agreed = await ensureConsent();
-  if (!agreed) return; // user declined privacy → stay on intro
-  const code = await ensureAccessCode();
-  if (!code) return;
+  const { ensureValidAccess } = await import('./access-gate.js');
+  const code = await ensureValidAccess({ apiBase: API_BASE });
+  if (!code) return; // cancelled or invalid — stay on intro
   fn();
 }
 
@@ -52,10 +50,3 @@ $('#modeVoiceBtn')?.addEventListener('click', async () => {
 $('#startBtn').addEventListener('click', () => {
   gated(() => showScreen('mode-select'));
 });
-
-// Eagerly consume ?k= from the URL so a shared link primes localStorage
-// even if the user lingers on the landing screen.
-(async () => {
-  const { getAccessCode } = await import('./access-gate.js');
-  getAccessCode();
-})();

@@ -1,22 +1,22 @@
 const LS_KEY = 'ten_years_access_code';
+const CONSENT_KEY = 'ten_years_privacy_agreed';
+const CONSENT_VERSION = '2026-04-23';
 
 export function getAccessCode() {
-  // URL param wins so a `?k=xxx` link can be shared with friends.
-  const params = new URLSearchParams(location.search);
-  const urlCode = params.get('k');
-  if (urlCode) {
-    localStorage.setItem(LS_KEY, urlCode);
-    return urlCode;
-  }
   return localStorage.getItem(LS_KEY) || null;
-}
-
-export function setAccessCode(code) {
-  localStorage.setItem(LS_KEY, code);
 }
 
 export function clearAccessCode() {
   localStorage.removeItem(LS_KEY);
+  localStorage.removeItem(CONSENT_KEY);
+}
+
+function urlCode() {
+  return new URLSearchParams(location.search).get('k') || '';
+}
+
+function hasConsent() {
+  return localStorage.getItem(CONSENT_KEY) === CONSENT_VERSION;
 }
 
 export function withAccessQuery(urlStr) {
@@ -38,71 +38,66 @@ export function newSessionId() {
   return Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 8);
 }
 
-const CONSENT_KEY = 'ten_years_privacy_agreed';
-const CONSENT_VERSION = '2026-04-23'; // bump this when the policy changes to force reconsent
-
-export function hasConsent() {
-  return localStorage.getItem(CONSENT_KEY) === CONSENT_VERSION;
+async function verifyCode(apiBase, code) {
+  try {
+    const r = await fetch(`${apiBase}/verify`, { headers: { 'X-Access-Code': code } });
+    return r.ok;
+  } catch {
+    return false;
+  }
 }
 
-export function requestConsent() {
-  return new Promise((resolve) => {
-    const el = document.getElementById('privacyConsent');
-    const accept = document.getElementById('privacyAcceptBtn');
-    const cancel = document.getElementById('privacyCancelBtn');
-    if (!el || !accept || !cancel) { resolve(true); return; }
-    el.hidden = false;
-    const cleanup = () => {
-      el.hidden = true;
-      accept.onclick = null;
-      cancel.onclick = null;
-    };
-    accept.onclick = () => {
-      localStorage.setItem(CONSENT_KEY, CONSENT_VERSION);
-      cleanup();
-      resolve(true);
-    };
-    cancel.onclick = () => { cleanup(); resolve(false); };
-  });
-}
-
-export async function ensureConsent() {
-  if (hasConsent()) return true;
-  return requestConsent();
-}
-
-function showGate() {
+function showGate({ apiBase, prefill = '', initialError = '' } = {}) {
   return new Promise((resolve) => {
     const gateEl = document.getElementById('accessGate');
     const inputEl = document.getElementById('accessGateInput');
     const btnEl = document.getElementById('accessGateBtn');
+    const cancelEl = document.getElementById('accessGateCancel');
     const errEl = document.getElementById('accessGateErr');
     if (!gateEl || !inputEl || !btnEl) { resolve(null); return; }
     gateEl.hidden = false;
-    inputEl.value = '';
-    if (errEl) errEl.textContent = '';
+    inputEl.value = prefill;
+    if (errEl) errEl.textContent = initialError;
     setTimeout(() => inputEl.focus(), 50);
-    const handle = () => {
+    const cleanup = (result) => {
+      gateEl.hidden = true;
+      btnEl.onclick = null;
+      inputEl.onkeydown = null;
+      if (cancelEl) cancelEl.onclick = null;
+      resolve(result);
+    };
+    const submit = async () => {
       const code = inputEl.value.trim();
       if (!code) { if (errEl) errEl.textContent = '請輸入通行碼'; return; }
-      setAccessCode(code);
-      gateEl.hidden = true;
-      resolve(code);
+      btnEl.disabled = true;
+      if (errEl) errEl.textContent = '驗證中…';
+      const ok = await verifyCode(apiBase, code);
+      btnEl.disabled = false;
+      if (ok) {
+        localStorage.setItem(LS_KEY, code);
+        localStorage.setItem(CONSENT_KEY, CONSENT_VERSION);
+        cleanup(code);
+      } else {
+        if (errEl) errEl.textContent = '通行碼錯誤，請再確認';
+      }
     };
-    btnEl.onclick = handle;
-    inputEl.onkeydown = (e) => { if (e.key === 'Enter') handle(); };
+    btnEl.onclick = submit;
+    inputEl.onkeydown = (e) => { if (e.key === 'Enter') submit(); };
+    if (cancelEl) cancelEl.onclick = () => cleanup(null);
   });
 }
 
-export async function ensureAccessCode() {
-  const existing = getAccessCode();
-  if (existing) return existing;
-  return showGate();
+// Returns a valid stored code, or null if user cancels / fails to enter one.
+// Shows the combined gate (passcode + consent-via-submit) when needed.
+export async function ensureValidAccess({ apiBase }) {
+  if (hasConsent() && getAccessCode()) return getAccessCode();
+  return showGate({ apiBase, prefill: urlCode() });
 }
 
-export async function reprompt(message) {
+// Called by fetch/WS handlers when an API call comes back 401: the stored code
+// was valid once but has been rotated or revoked. Clear everything and
+// re-gate with a message.
+export async function reprompt(apiBase, message) {
   clearAccessCode();
-  const errEl = document.getElementById('accessGateErr');
-  if (errEl && message) errEl.textContent = message;
-  return showGate();
+  return showGate({ apiBase, initialError: message || '' });
 }

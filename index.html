@@ -215,27 +215,11 @@
     <div class="loader__dot"></div>
   </div>
 
-  <!-- Privacy consent overlay -->
-  <div id="privacyConsent" hidden style="position:fixed;inset:0;background:rgba(0,0,0,.72);display:flex;align-items:center;justify-content:center;z-index:9998;padding:16px;">
-    <div style="background:#fff;padding:28px 24px;border-radius:12px;max-width:460px;width:100%;color:#222;box-shadow:0 12px 40px rgba(0,0,0,.35);max-height:88vh;overflow-y:auto;">
-      <h2 style="margin:0 0 12px;font-size:20px;text-align:center;">開始之前</h2>
-      <p style="margin:0 0 16px;color:#444;font-size:14px;line-height:1.7;">
-        本服務為回顧與改善品質，會把<strong>這次對話的完整逐字內容</strong>（含 AI 的提問、你的回答、最終 profile、信件）保存在伺服器上 <strong>90 天</strong>後自動刪除。我們不蒐集姓名、Email、真實 IP，也不會拿你的內容去訓練 AI。
-      </p>
-      <p style="margin:0 0 18px;color:#666;font-size:13px;line-height:1.6;">
-        完整內容請參閱
-        <a href="/zh/products/ten-years/privacy/" target="_blank" rel="noopener" style="color:#000;font-weight:600;">隱私權政策</a>。
-      </p>
-      <div style="display:flex;gap:10px;">
-        <button id="privacyCancelBtn" style="flex:1;padding:11px;background:#eee;color:#333;border:0;border-radius:6px;font-size:14px;cursor:pointer;">不同意</button>
-        <button id="privacyAcceptBtn" style="flex:2;padding:11px;background:#222;color:#fff;border:0;border-radius:6px;font-size:14px;cursor:pointer;font-weight:600;">同意並繼續</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Access gate overlay -->
+  <!-- Access gate overlay (passcode + consent-via-submit) -->
   <div id="accessGate" hidden style="position:fixed;inset:0;background:rgba(0,0,0,.72);display:flex;align-items:center;justify-content:center;z-index:9999;padding:16px;">
-    <div style="background:#fff;padding:28px 24px;border-radius:12px;max-width:360px;width:100%;text-align:center;color:#222;box-shadow:0 12px 40px rgba(0,0,0,.35);">
+    <div style="position:relative;background:#fff;padding:28px 24px 20px;border-radius:12px;max-width:360px;width:100%;text-align:center;color:#222;box-shadow:0 12px 40px rgba(0,0,0,.35);">
+      <button id="accessGateCancel" aria-label="關閉"
+        style="position:absolute;top:8px;right:10px;background:none;border:0;font-size:22px;color:#999;cursor:pointer;line-height:1;padding:4px 8px;">×</button>
       <h2 style="margin:0 0 8px;font-size:20px;">這是私人體驗</h2>
       <p style="margin:0 0 18px;color:#666;font-size:14px;line-height:1.5;">請輸入朋友給你的通行碼</p>
       <input id="accessGateInput" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"
@@ -243,6 +227,12 @@
       <div id="accessGateErr" style="color:#c23;font-size:13px;min-height:18px;margin:8px 0;"></div>
       <button id="accessGateBtn"
         style="width:100%;padding:11px;background:#222;color:#fff;border:0;border-radius:6px;font-size:15px;cursor:pointer;font-weight:600;">繼續</button>
+      <p style="margin:14px 0 0;color:#888;font-size:12px;line-height:1.6;">
+        點擊「繼續」即代表你同意
+        <a href="/zh/products/ten-years/privacy/" target="_blank" rel="noopener" style="color:#333;text-decoration:underline;">隱私權政策</a>
+        與
+        <a href="/zh/products/ten-years/terms/" target="_blank" rel="noopener" style="color:#333;text-decoration:underline;">服務條款</a>。
+      </p>
     </div>
   </div>
 

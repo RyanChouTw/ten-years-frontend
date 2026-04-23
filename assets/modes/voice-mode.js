@@ -241,7 +241,7 @@ export function startVoiceMode(ctx) {
     }));
     if (r.status === 401) {
       setLoader(false);
-      await reprompt('通行碼錯誤或已失效，請重新輸入');
+      await reprompt(apiBase, '通行碼錯誤或已失效，請重新輸入');
       toast('通行碼錯誤，請重新開始');
       return;
     }

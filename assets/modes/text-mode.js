@@ -22,7 +22,7 @@ export function startTextMode({ apiBase, showScreen, setLoader, toast }) {
       body: JSON.stringify(body),
     }, sessionId));
     if (res.status === 401) {
-      await reprompt('通行碼錯誤或已失效，請重新輸入');
+      await reprompt(apiBase, '通行碼錯誤或已失效，請重新輸入');
       throw new Error('通行碼錯誤');
     }
     if (!res.ok) {
